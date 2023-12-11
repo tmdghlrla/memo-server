@@ -27,7 +27,7 @@ api.add_resource(UserRegisterResource, '/user/register')        # 회원가입
 api.add_resource(UserLoginResource, '/user/login')              # 로그인
 api.add_resource(MemoListResource,'/memo')                      # 메모작성, 리스트보기
 api.add_resource(MemoResource,'/memo/<int:memo_id>')            # 메모수정, 삭제
-api.add_resource(fMemoListResource,'/fMemo')                      # 친구메모 불러오기
+api.add_resource(fMemoListResource,'/fMemo')                    # 친구메모 불러오기
 api.add_resource(FollowResource,'/follow/<int:followeeId>')     # 친구맺기, 끊기
 if __name__ == '__main__' :
     app.run()
