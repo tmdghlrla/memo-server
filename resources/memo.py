@@ -142,18 +142,20 @@ class fMemoListResource(Resource) :
     def get(self) :
         followerId = get_jwt_identity()
         offset = request.args.get('offset')
-        limit = offset = request.args.get('limit')
+        limit = request.args.get('limit')
 
         try :
             connection = get_connection()
-            query = '''select f.id, u.nickname, m.title, m.date, m.content
+            query = '''select m.id as memoId, m.userId, m.title,
+                        m.date, m.content, m.createdAt,
+                         m.updatedAt, u.nickname
                         from follow as f
                         join memo as m
                         on f.followeeId = m.userId
                         join user as u
                         on u.id = m.userId
                         where f.followerId = %s
-                        order by date
+                        order by m.date
                         limit ''' + offset +''', ''' + limit + ''';'''
             
             record = (followerId,)
@@ -170,6 +172,9 @@ class fMemoListResource(Resource) :
             i = 0
             for row in result_list :
                 result_list[i]['date'] = row['date'].isoformat()
+                result_list[i]['createdAt'] = row['createdAt'].isoformat()
+                result_list[i]['updatedAt'] = row['updatedAt'].isoformat()
+
                 i = i+1
 
             cursor.close()
@@ -182,4 +187,6 @@ class fMemoListResource(Resource) :
 
             return {"fail" : str(e)}, 500
         
-        return {"result" : "success", "items" : result_list, "count" : len(result_list)}, 200
+        return {"result" : "success", 
+                "items" : result_list, 
+                "count" : len(result_list)}, 200
